@@ -4,15 +4,13 @@ import tasks from "../data/tasks";
 export const fetchTasks = createAsyncThunk(
     'tasks/fetch',
     async () => {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 3000));
         return tasks;
     }
 );
 
 const initialState = {
-    tasks: [
-        { id: 0, title: "Задание 0", completed: false }
-    ]
+    tasks: []
 };
 
 const taskSlice = createSlice({
@@ -32,12 +30,16 @@ const taskSlice = createSlice({
             .addCase(fetchTasks.fulfilled, (state, action) => {
                 state.loadingStatus = 'idle';
                 state.error = null;
-                state.tasks = [...state.tasks, ...action.payload]
+                // В строках 36-41 сложнее, чем следовало бы из-за дублирования загружаемых тасков в state.tasks 
+                action.payload.map(newTask => {
+                    if (state.tasks.filter(oldTask => oldTask.id == newTask.id).length === 0) {
+                        state.tasks = [...state.tasks, newTask];
+                    }
+                });
             })
             .addCase(fetchTasks.rejected, (state, action) => {
                 state.loadingStatus = 'failed';
                 state.error = action.error;
-                console.log('failed');
             });
     },
 });

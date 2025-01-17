@@ -7,6 +7,7 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks } from '../reducers/taskSlice';
+import { useEffect } from 'react';
 // import { change, changeAvailable, remove } from '../reducers/goodsSlice';
 
 
@@ -16,18 +17,9 @@ function TasksList() {
     const tasks = useSelector(state => state.tasks.tasks);
     const dispatch = useDispatch();
 
-    // const onDeleteButtonClick = (e) => {
-    //     dispatch(remove(e.target.value));
-    // };
-
-    // const onChangeAvailableButtonClick = (e) => {
-    //     dispatch(changeAvailable(e.target.value));
-    // };
-
-    // const onChangeButtonClick = (e) => {
-    //     const current = state.goods.filter((item) => item.id == e.target.value);
-    //     dispatch(change(current));
-    // };
+    useEffect(() => { 
+        dispatch(fetchTasks());
+    }, []);
 
 
     return (
@@ -62,12 +54,6 @@ function TasksList() {
                     ))}
                 </TableBody>
             </Table>
-            <Button
-                variant="contained"
-                onClick={() => { dispatch(fetchTasks()) }}
-            >
-                Загрузить
-            </Button>
         </Box>
     );
 }
